@@ -41,5 +41,7 @@ is required.
   the parking record as a soft-deleted `EXITED` session.
 - **Logs:** search, filter, paginate, and export the complete administrator,
   entry, and exit audit trail.
+- **Emergency gate:** issue a confirmed open or close command with persistent
+  state, administrator attribution, and timestamped audit history.
 
 See `Backend/README.md` and `Client/README.md` for service-specific details.

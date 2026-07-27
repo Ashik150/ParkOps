@@ -39,8 +39,15 @@ Subsequent access requires an email, password, and signed JWT.
 - `GET /api/parking/slots` — complete VIP and Normal slot map
 - `GET/POST /api/parking/entries` — list or create active entries
 - `POST /api/parking/entries/:id/exit` — soft-delete an active entry
+- `GET /api/gates/emergency` — current emergency-gate state and activity
+- `POST /api/gates/emergency/open` — open the emergency gate
+- `POST /api/gates/emergency/close` — close the emergency gate
 - `GET /api/logs` — paginated and searchable audit logs
 
 Parking changes and their audit records use a MongoDB transaction. Vehicle
 numbers and slots are uniquely constrained while active, protecting against
 concurrent double bookings.
+
+Emergency-gate endpoints provide the authenticated digital command and state
+layer. Connecting that command to a physical barrier requires the barrier
+controller's relay, PLC, or vendor API specification.

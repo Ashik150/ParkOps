@@ -35,4 +35,6 @@ export const actionLabel = (action = "") =>
     AUTH_LOGIN: "Admin login",
     PARKING_ENTRY: "Vehicle entry",
     PARKING_EXIT: "Vehicle exit",
+    EMERGENCY_GATE_OPENED: "Emergency gate opened",
+    EMERGENCY_GATE_CLOSED: "Emergency gate closed",
   })[action] || action.replaceAll("_", " ").toLowerCase();

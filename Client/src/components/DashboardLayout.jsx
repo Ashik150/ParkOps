@@ -7,6 +7,7 @@ import {
   LogIn,
   LogOut,
   Menu,
+  Siren,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -21,6 +22,7 @@ const navigation = [
   { label: "Exit", path: "/exit", icon: LogOut },
   { label: "Free slots", path: "/free-slots", icon: Grid3X3 },
   { label: "Occupied", path: "/occupied", icon: Car },
+  { label: "Emergency gate", path: "/emergency-gate", icon: Siren },
   { label: "Logs", path: "/logs", icon: FileClock },
 ];
 
@@ -30,6 +32,7 @@ const pageNames = {
   "/exit": "Vehicle exit",
   "/free-slots": "Free slots",
   "/occupied": "Occupied slots",
+  "/emergency-gate": "Emergency gate",
   "/logs": "Activity logs",
 };
 

@@ -7,6 +7,7 @@ import {
   RefreshCw,
   Search,
   ShieldCheck,
+  Siren,
   UserPlus,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -19,6 +20,8 @@ const actionOptions = [
   ["", "All activity"],
   ["PARKING_ENTRY", "Vehicle entries"],
   ["PARKING_EXIT", "Vehicle exits"],
+  ["EMERGENCY_GATE_OPENED", "Emergency gate opened"],
+  ["EMERGENCY_GATE_CLOSED", "Emergency gate closed"],
   ["AUTH_LOGIN", "Admin logins"],
   ["ADMIN_CREATED", "Admin setup"],
 ];
@@ -26,6 +29,8 @@ const actionOptions = [
 const actionIcons = {
   PARKING_ENTRY: LogIn,
   PARKING_EXIT: LogOut,
+  EMERGENCY_GATE_OPENED: Siren,
+  EMERGENCY_GATE_CLOSED: ShieldCheck,
   AUTH_LOGIN: ShieldCheck,
   ADMIN_CREATED: UserPlus,
 };
@@ -89,7 +94,7 @@ export default function LogsPage() {
       <PageHeader
         eyebrow="Audit trail"
         title="System activity logs"
-        description="A permanent record of administrative, entry, and exit activity."
+        description="A permanent record of administrative, parking, and emergency-gate activity."
         action={
           <button className="button button--secondary" onClick={exportCsv} disabled={!logs.length}>
             <Download size={17} />Export current page
@@ -126,7 +131,7 @@ export default function LogsPage() {
                     return (
                       <tr key={log._id}>
                         <td><span className={`log-event log-event--${log.action.toLowerCase()}`}><i><Icon size={16} /></i>{actionLabel(log.action)}</span></td>
-                        <td><strong className="log-message">{log.message}</strong>{log.details?.vehicleNumber && <small className="log-detail">Vehicle: {log.details.vehicleNumber}</small>}</td>
+                        <td><strong className="log-message">{log.message}</strong>{log.details?.vehicleNumber && <small className="log-detail">Vehicle: {log.details.vehicleNumber}</small>}{log.details?.gateName && <small className="log-detail">Gate: {log.details.gateName} · State: {log.details.newStatus}</small>}</td>
                         <td><span className="admin-cell"><i>{log.actor.name.charAt(0)}</i><span><strong>{log.actor.name}</strong><small>{log.actor.email}</small></span></span></td>
                         <td><span className="date-cell">{formatDateTime(log.createdAt)}</span></td>
                       </tr>

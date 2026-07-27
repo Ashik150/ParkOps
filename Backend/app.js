@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const gateRoutes = require("./routes/gateRoutes");
 const logRoutes = require("./routes/logRoutes");
 const parkingRoutes = require("./routes/parkingRoutes");
 const protect = require("./middleware/auth");
@@ -42,6 +43,7 @@ app.get("/api/health", (_request, response) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", protect, dashboardRoutes);
 app.use("/api/parking", protect, parkingRoutes);
+app.use("/api/gates", protect, gateRoutes);
 app.use("/api/logs", protect, logRoutes);
 
 app.use(notFound);

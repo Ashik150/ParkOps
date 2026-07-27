@@ -3,6 +3,7 @@ import "./App.css";
 import DashboardLayout from "./components/DashboardLayout";
 import LoadingScreen from "./components/LoadingScreen";
 import { useAuth } from "./hooks/useAuth";
+import EmergencyGatePage from "./pages/EmergencyGatePage";
 import EntryPage from "./pages/EntryPage";
 import ExitPage from "./pages/ExitPage";
 import FreeSlotsPage from "./pages/FreeSlotsPage";
@@ -32,6 +33,7 @@ function App() {
         <Route path="/exit" element={<ExitPage />} />
         <Route path="/free-slots" element={<FreeSlotsPage />} />
         <Route path="/occupied" element={<OccupiedSlotsPage />} />
+        <Route path="/emergency-gate" element={<EmergencyGatePage />} />
         <Route path="/logs" element={<LogsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

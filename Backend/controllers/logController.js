@@ -12,9 +12,14 @@ const listLogs = async (request, response) => {
   const search = request.query.search?.trim();
 
   if (
-    ["ADMIN_CREATED", "AUTH_LOGIN", "PARKING_ENTRY", "PARKING_EXIT"].includes(
-      action,
-    )
+    [
+      "ADMIN_CREATED",
+      "AUTH_LOGIN",
+      "PARKING_ENTRY",
+      "PARKING_EXIT",
+      "EMERGENCY_GATE_OPENED",
+      "EMERGENCY_GATE_CLOSED",
+    ].includes(action)
   ) {
     filter.action = action;
   }
@@ -26,6 +31,7 @@ const listLogs = async (request, response) => {
       { "actor.name": safeSearch },
       { "actor.email": safeSearch },
       { "details.vehicleNumber": safeSearch },
+      { "details.gateName": safeSearch },
     ];
   }
 
