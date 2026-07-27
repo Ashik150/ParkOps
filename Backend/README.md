@@ -1,20 +1,45 @@
-# ParkOps backend
+# ParkOps API
 
-## MongoDB Atlas setup
+Express and MongoDB Atlas API for the ParkOps parking and gate control system.
 
-1. In Atlas, create a database user and allow your current IP address under
-   **Network Access**.
+## Setup
+
+1. In MongoDB Atlas, create a database user and add your current IP address
+   under **Network Access**.
 2. Copy `.env.example` to `.env`.
-3. Replace the placeholder `MONGODB_URI` with the connection string from
-   Atlas. URL-encode special characters in the username or password.
-4. Start the API:
+3. Replace `MONGODB_URI` with the Atlas connection string and replace
+   `JWT_SECRET` with a unique random value of at least 32 characters.
+4. Install and start the API:
 
    ```bash
-   npm start
+   npm install
+   npm run dev
    ```
 
-The server connects to Atlas before accepting requests. Once running, check
-`GET http://localhost:5000/api/health`; it returns `database: "connected"` when
-the connection is healthy.
+`npm run dev` intentionally uses the normal Node process because recursive
+watch mode can exceed the macOS open-file limit in dependency-heavy projects.
+Restart the command after changing backend files.
 
-Never commit `.env`; it is excluded by `.gitignore`.
+The API runs on `http://localhost:5001` by default. Check
+`GET /api/health` to confirm the Atlas connection.
+
+## Authentication
+
+Use **Create first admin** on the frontend the first time the system runs. The
+public setup endpoint closes automatically after an administrator exists.
+Subsequent access requires an email, password, and signed JWT.
+
+## Main API routes
+
+- `POST /api/auth/register` — create the first administrator only
+- `POST /api/auth/login` — administrator login
+- `GET /api/auth/me` — restore the current session
+- `GET /api/dashboard` — live capacity and activity summary
+- `GET /api/parking/availability` — available VIP or Normal slots
+- `GET/POST /api/parking/entries` — list or create active entries
+- `POST /api/parking/entries/:id/exit` — soft-delete an active entry
+- `GET /api/logs` — paginated and searchable audit logs
+
+Parking changes and their audit records use a MongoDB transaction. Vehicle
+numbers and slots are uniquely constrained while active, protecting against
+concurrent double bookings.

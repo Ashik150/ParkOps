@@ -4,7 +4,7 @@
   "description": "ParkOps API backed by MongoDB Atlas",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch index.js",
+    "dev": "node index.js",
     "start": "node index.js",
     "test": "node --test"
   },
@@ -16,8 +16,13 @@
     "node": ">=20.19.0"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.6.1",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.8.0"
   }
 }

@@ -1,34 +1,49 @@
 require("dotenv").config({ quiet: true });
 
-const express = require("express");
 const mongoose = require("mongoose");
+const app = require("./app");
 const connectDatabase = require("./config/db");
-
-const app = express();
-const port = process.env.PORT || 5000;
-
-app.use(express.json());
-
-app.get("/api/health", (_request, response) => {
-  const database =
-    mongoose.connection.readyState === 1 ? "connected" : "disconnected";
-
-  response.status(database === "connected" ? 200 : 503).json({
-    status: database === "connected" ? "ok" : "unavailable",
-    database,
-  });
-});
+const getParkingConfig = require("./services/parkingConfigService");
 
 const startServer = async () => {
   try {
-    await connectDatabase();
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+      throw new Error("JWT_SECRET must be configured with at least 32 characters.");
+    }
 
-    app.listen(port, () => {
-      console.log(`ParkOps API running on port ${port}`);
+    await connectDatabase();
+    await getParkingConfig();
+    const port = process.env.PORT || 5001;
+
+    const server = await new Promise((resolve, reject) => {
+      const httpServer = app.listen(port, () => {
+        httpServer.removeListener("error", reject);
+        resolve(httpServer);
+      });
+      httpServer.once("error", reject);
     });
+    console.log(`ParkOps API running at http://localhost:${port}`);
+
+    const shutdown = async (signal) => {
+      console.log(`${signal} received. Closing ParkOps API.`);
+      server.close(async () => {
+        await mongoose.connection.close();
+        process.exit(0);
+      });
+    };
+
+    process.once("SIGINT", () => shutdown("SIGINT"));
+    process.once("SIGTERM", () => shutdown("SIGTERM"));
+
+    return server;
   } catch (error) {
-    console.error(`Unable to start ParkOps API: ${error.message}`);
+    const message =
+      error.code === "EADDRINUSE"
+        ? `Port ${process.env.PORT || 5001} is already in use. Choose another PORT in Backend/.env.`
+        : error.message;
+    console.error(`Unable to start ParkOps API: ${message}`);
     process.exitCode = 1;
+    return null;
   }
 };
 
