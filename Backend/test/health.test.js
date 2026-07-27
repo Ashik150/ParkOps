@@ -2,7 +2,7 @@ const assert = require("node:assert/strict");
 const { once } = require("node:events");
 const test = require("node:test");
 
-const { app } = require("../index");
+const app = require("../app");
 
 test("health endpoint reports a disconnected database", async (context) => {
   const server = app.listen(0);

@@ -1,34 +1,40 @@
 require("dotenv").config({ quiet: true });
 
-const express = require("express");
 const mongoose = require("mongoose");
+const app = require("./app");
 const connectDatabase = require("./config/db");
-
-const app = express();
-const port = process.env.PORT || 5000;
-
-app.use(express.json());
-
-app.get("/api/health", (_request, response) => {
-  const database =
-    mongoose.connection.readyState === 1 ? "connected" : "disconnected";
-
-  response.status(database === "connected" ? 200 : 503).json({
-    status: database === "connected" ? "ok" : "unavailable",
-    database,
-  });
-});
+const getParkingConfig = require("./services/parkingConfigService");
 
 const startServer = async () => {
   try {
-    await connectDatabase();
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+      throw new Error("JWT_SECRET must be configured with at least 32 characters.");
+    }
 
-    app.listen(port, () => {
+    await connectDatabase();
+    await getParkingConfig();
+    const port = process.env.PORT || 5000;
+
+    const server = app.listen(port, () => {
       console.log(`ParkOps API running on port ${port}`);
     });
+
+    const shutdown = async (signal) => {
+      console.log(`${signal} received. Closing ParkOps API.`);
+      server.close(async () => {
+        await mongoose.connection.close();
+        process.exit(0);
+      });
+    };
+
+    process.once("SIGINT", () => shutdown("SIGINT"));
+    process.once("SIGTERM", () => shutdown("SIGTERM"));
+
+    return server;
   } catch (error) {
     console.error(`Unable to start ParkOps API: ${error.message}`);
     process.exitCode = 1;
+    return null;
   }
 };
 
