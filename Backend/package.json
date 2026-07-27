@@ -4,7 +4,7 @@
   "description": "ParkOps API backed by MongoDB Atlas",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch index.js",
+    "dev": "node index.js",
     "start": "node index.js",
     "test": "node --test"
   },

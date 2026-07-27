@@ -13,11 +13,16 @@ const startServer = async () => {
 
     await connectDatabase();
     await getParkingConfig();
-    const port = process.env.PORT || 5000;
+    const port = process.env.PORT || 5001;
 
-    const server = app.listen(port, () => {
-      console.log(`ParkOps API running on port ${port}`);
+    const server = await new Promise((resolve, reject) => {
+      const httpServer = app.listen(port, () => {
+        httpServer.removeListener("error", reject);
+        resolve(httpServer);
+      });
+      httpServer.once("error", reject);
     });
+    console.log(`ParkOps API running at http://localhost:${port}`);
 
     const shutdown = async (signal) => {
       console.log(`${signal} received. Closing ParkOps API.`);
@@ -32,7 +37,11 @@ const startServer = async () => {
 
     return server;
   } catch (error) {
-    console.error(`Unable to start ParkOps API: ${error.message}`);
+    const message =
+      error.code === "EADDRINUSE"
+        ? `Port ${process.env.PORT || 5001} is already in use. Choose another PORT in Backend/.env.`
+        : error.message;
+    console.error(`Unable to start ParkOps API: ${message}`);
     process.exitCode = 1;
     return null;
   }

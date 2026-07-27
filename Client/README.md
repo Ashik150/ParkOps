@@ -10,7 +10,7 @@ npm run dev
 ```
 
 The development server runs at `http://localhost:5173` and proxies `/api`
-requests to the backend at `http://localhost:5000`.
+requests to the backend at `http://localhost:5001`.
 
 Available commands:
 

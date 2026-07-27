@@ -16,7 +16,11 @@ Express and MongoDB Atlas API for the ParkOps parking and gate control system.
    npm run dev
    ```
 
-The API runs on `http://localhost:5000` by default. Check
+`npm run dev` intentionally uses the normal Node process because recursive
+watch mode can exceed the macOS open-file limit in dependency-heavy projects.
+Restart the command after changing backend files.
+
+The API runs on `http://localhost:5001` by default. Check
 `GET /api/health` to confirm the Atlas connection.
 
 ## Authentication
