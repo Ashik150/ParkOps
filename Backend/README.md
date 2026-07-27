@@ -36,6 +36,7 @@ Subsequent access requires an email, password, and signed JWT.
 - `GET /api/auth/me` — restore the current session
 - `GET /api/dashboard` — live capacity and activity summary
 - `GET /api/parking/availability` — available VIP or Normal slots
+- `GET /api/parking/slots` — complete VIP and Normal slot map
 - `GET/POST /api/parking/entries` — list or create active entries
 - `POST /api/parking/entries/:id/exit` — soft-delete an active entry
 - `GET /api/logs` — paginated and searchable audit logs

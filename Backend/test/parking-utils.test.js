@@ -2,6 +2,7 @@ const assert = require("node:assert/strict");
 const test = require("node:test");
 const ParkingSession = require("../models/ParkingSession");
 const {
+  buildSlotSection,
   getAvailableSlotNumbers,
   normalizeVehicleNumber,
 } = require("../utils/parking");
@@ -15,6 +16,40 @@ test("vehicle numbers are normalized before uniqueness checks", () => {
 
 test("available slots exclude every occupied slot", () => {
   assert.deepEqual(getAvailableSlotNumbers(6, [1, 3, 6]), [2, 4, 5]);
+});
+
+test("slot sections pair occupied spaces with their vehicles", () => {
+  const section = buildSlotSection("VIP", 3, [
+    {
+      _id: "entry-1",
+      slotType: "VIP",
+      slotNumber: 2,
+      vehicleNumber: "DHAKA-1234",
+      vehicleType: "SUV",
+      phoneNumber: "01700000000",
+      entryAt: new Date("2026-07-27T10:00:00.000Z"),
+    },
+    {
+      _id: "normal-entry",
+      slotType: "NORMAL",
+      slotNumber: 1,
+      vehicleNumber: "IGNORED",
+    },
+  ]);
+
+  assert.equal(section.capacity, 3);
+  assert.equal(section.occupied, 1);
+  assert.equal(section.free, 2);
+  assert.deepEqual(
+    section.slots.map(({ slotCode, status }) => ({ slotCode, status })),
+    [
+      { slotCode: "V-01", status: "FREE" },
+      { slotCode: "V-02", status: "OCCUPIED" },
+      { slotCode: "V-03", status: "FREE" },
+    ],
+  );
+  assert.equal(section.slots[1].vehicle.vehicleNumber, "DHAKA-1234");
+  assert.equal(section.slots[0].vehicle, null);
 });
 
 test("active vehicles and active slots have partial unique indexes", () => {

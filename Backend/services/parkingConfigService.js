@@ -15,7 +15,11 @@ const getParkingConfig = () =>
         normalCapacity: parseCapacity(process.env.NORMAL_CAPACITY, 80),
       },
     },
-    { upsert: true, new: true, setDefaultsOnInsert: true },
+    {
+      upsert: true,
+      returnDocument: "after",
+      setDefaultsOnInsert: true,
+    },
   );
 
 module.exports = getParkingConfig;

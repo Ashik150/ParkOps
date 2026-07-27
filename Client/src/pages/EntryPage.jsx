@@ -7,6 +7,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { apiRequest } from "../api/client";
 import { Alert, SectionLoader } from "../components/Feedback";
 import PageHeader from "../components/PageHeader";
@@ -30,7 +31,14 @@ const vehicleTypes = [
 ];
 
 export default function EntryPage() {
-  const [form, setForm] = useState(initialForm);
+  const location = useLocation();
+  const [form, setForm] = useState(() => ({
+    ...initialForm,
+    ...(location.state?.slotType && {
+      slotType: location.state.slotType,
+      slotNumber: String(location.state.slotNumber || ""),
+    }),
+  }));
   const [availability, setAvailability] = useState(null);
   const [loadingSlots, setLoadingSlots] = useState(true);
   const [submitting, setSubmitting] = useState(false);

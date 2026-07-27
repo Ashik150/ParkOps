@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { apiRequest } from "../api/client";
 import { Alert, EmptyState, SectionLoader } from "../components/Feedback";
 import PageHeader from "../components/PageHeader";
@@ -43,8 +44,9 @@ function ExitModal({ entry, onClose, onConfirm, processing }) {
 }
 
 export default function ExitPage() {
+  const location = useLocation();
   const [entries, setEntries] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(location.state?.vehicleNumber || "");
   const [type, setType] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);

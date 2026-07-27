@@ -4,6 +4,7 @@ const createAuditLog = require("../services/auditService");
 const getParkingConfig = require("../services/parkingConfigService");
 const AppError = require("../utils/AppError");
 const {
+  buildSlotSection,
   escapeRegex,
   getAvailableSlotNumbers,
   normalizeVehicleNumber,
@@ -42,6 +43,39 @@ const getAvailability = async (request, response) => {
     capacity,
     occupied: occupiedSlots.length,
     availableSlots: getAvailableSlotNumbers(capacity, occupiedSlots),
+  });
+};
+
+const getSlotMap = async (_request, response) => {
+  const [config, activeEntries] = await Promise.all([
+    getParkingConfig(),
+    ParkingSession.find({ status: "ACTIVE", isDeleted: false })
+      .select(
+        "_id vehicleNumber vehicleType phoneNumber slotType slotNumber entryAt",
+      )
+      .sort({ slotType: 1, slotNumber: 1 })
+      .lean(),
+  ]);
+
+  const vip = buildSlotSection("VIP", config.vipCapacity, activeEntries);
+  const normal = buildSlotSection(
+    "NORMAL",
+    config.normalCapacity,
+    activeEntries,
+  );
+
+  response.json({
+    success: true,
+    summary: {
+      totalCapacity: vip.capacity + normal.capacity,
+      totalOccupied: vip.occupied + normal.occupied,
+      totalFree: vip.free + normal.free,
+    },
+    sections: {
+      VIP: vip,
+      NORMAL: normal,
+    },
+    generatedAt: new Date(),
   });
 };
 
@@ -226,5 +260,6 @@ module.exports = {
   createEntry,
   exitEntry,
   getAvailability,
+  getSlotMap,
   listEntries,
 };

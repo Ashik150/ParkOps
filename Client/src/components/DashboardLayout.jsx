@@ -1,6 +1,8 @@
 import {
   Bell,
+  Car,
   FileClock,
+  Grid3X3,
   Home,
   LogIn,
   LogOut,
@@ -17,6 +19,8 @@ const navigation = [
   { label: "Home", path: "/", icon: Home },
   { label: "Entry", path: "/entry", icon: LogIn },
   { label: "Exit", path: "/exit", icon: LogOut },
+  { label: "Free slots", path: "/free-slots", icon: Grid3X3 },
+  { label: "Occupied", path: "/occupied", icon: Car },
   { label: "Logs", path: "/logs", icon: FileClock },
 ];
 
@@ -24,6 +28,8 @@ const pageNames = {
   "/": "Overview",
   "/entry": "Vehicle entry",
   "/exit": "Vehicle exit",
+  "/free-slots": "Free slots",
+  "/occupied": "Occupied slots",
   "/logs": "Activity logs",
 };
 
